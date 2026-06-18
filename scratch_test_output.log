@@ -1,0 +1,35 @@
+Loading model...
+llama_context: n_ctx_seq (2048) < n_ctx_train (32768) -- the full capacity of the model will not be utilized
+llama_kv_cache_iswa: using full-size SWA cache (ref: https://github.com/ggml-org/llama.cpp/pull/13194#issuecomment-2868343055)
+Model loaded.
+✅ PASS [3408ms] Input: "turn on the lamp" -> Got: lamp_on({}) [Expected: lamp_on] Raw: 'lamp_on{}'
+  [VALIDATION REJECT] 'disable_smart_mode' rejected for transcript 'switch off the light please' (no matching keywords: ['manual', 'smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [434ms] Input: "switch off the light please" -> Got: unknown({}) [Expected: lamp_off] Raw: 'disable_smart_mode{}'
+✅ PASS [186ms] Input: "make the light brighter" -> Got: increase_brightness({}) [Expected: increase_brightness] Raw: 'increase_brightness{}'
+❌ FAIL [194ms] Input: "dim the light a little bit" -> Got: increase_brightness({}) [Expected: decrease_brightness] Raw: 'increase_brightness{}'
+✅ PASS [336ms] Input: "set brightness to eighty percent" -> Got: set_brightness({'value': 80}) [Expected: set_brightness] Raw: 'set_brightness{value:80}'
+❌ FAIL [341ms] Input: "brightness 50 percent" -> Got: increase_brightness({'value': 50}) [Expected: set_brightness] Raw: 'increase_brightness{value:50}'
+✅ PASS [187ms] Input: "rotate the lamp left" -> Got: pan_left({}) [Expected: pan_left] Raw: 'pan_left{}'
+✅ PASS [186ms] Input: "look to the right" -> Got: pan_right({}) [Expected: pan_right] Raw: 'pan_right{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'face forward please' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [236ms] Input: "face forward please" -> Got: unknown({}) [Expected: pan_center] Raw: 'enable_smart_mode{}'
+❌ FAIL [191ms] Input: "rotate to ninety degrees" -> Got: pan_right({}) [Expected: set_pan_angle] Raw: 'pan_right{}'
+✅ PASS [376ms] Input: "enable auto brightness" -> Got: enable_smart_mode({}) [Expected: enable_smart_mode] Raw: 'enable_smart_mode{}'
+❌ FAIL [244ms] Input: "stop automatic mode" -> Got: enable_smart_mode({}) [Expected: disable_smart_mode] Raw: 'enable_smart_mode{}'
+✅ PASS [237ms] Input: "activate focus mode" -> Got: activate_focus_tracker({}) [Expected: activate_focus_tracker] Raw: 'enable_focus_tracker{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'stop focus tracking' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [248ms] Input: "stop focus tracking" -> Got: unknown({}) [Expected: deactivate_focus_tracker] Raw: 'enable_smart_mode{}'
+✅ PASS [212ms] Input: "begin study session" -> Got: start_pomodoro({}) [Expected: start_pomodoro] Raw: 'start_pomodoro{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'hold the timer' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [237ms] Input: "hold the timer" -> Got: unknown({}) [Expected: pause_pomodoro] Raw: 'enable_smart_mode{}'
+❌ FAIL [241ms] Input: "restart pomodoro timer" -> Got: unknown({}) [Expected: reset_pomodoro] Raw: 'restart pomodoro timer{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'scan this page' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [239ms] Input: "scan this page" -> Got: unknown({}) [Expected: start_scan] Raw: 'enable_smart_mode{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'capture' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [255ms] Input: "capture" -> Got: unknown({}) [Expected: capture_page] Raw: 'enable_smart_mode{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'generate a pdf of the scan' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [290ms] Input: "generate a pdf of the scan" -> Got: unknown({}) [Expected: finish_scan] Raw: 'enable_smart_mode{}'
+  [VALIDATION REJECT] 'enable_smart_mode' rejected for transcript 'discard the document scan' (no matching keywords: ['smart', 'auto', 'sensor', 'automatic'])
+❌ FAIL [239ms] Input: "discard the document scan" -> Got: unknown({}) [Expected: cancel_scan] Raw: 'enable_smart_mode{}'
+  [VALIDATION REJECT] 'set_brightness' rejected for transcript 'what is the weather in the room' (no matching keywords: ['brightness', 'bright', 'dim', 'percent', '%', 'value', 'level'])
+❌ FAIL [352ms] Input: "what is the weather in the room" -> Got: unknown({}) [Expected: get_environment_status] Raw: 'set_brightness{value:75}'

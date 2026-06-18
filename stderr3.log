@@ -1,0 +1,11 @@
+Error in cpuinfo: prctl(PR_SVE_GET_VL) failed
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1778262285.643951    9300 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1778262285.671353    9303 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+[ WARN:0@4.343] global cap_v4l.cpp:913 open VIDEOIO(V4L2:/dev/video1): can't open camera by index
+[ WARN:0@4.343] global cap.cpp:478 open VIDEOIO(V4L2): backend is generally available but can't be used to capture by index
+[ WARN:0@4.345] global cap_v4l.cpp:913 open VIDEOIO(V4L2:/dev/video4): can't open camera by index
+[ WARN:0@4.345] global cap.cpp:478 open VIDEOIO(V4L2): backend is generally available but can't be used to capture by index
+[ WARN:0@4.345] global cap_v4l.cpp:913 open VIDEOIO(V4L2:/dev/video6): can't open camera by index
+[ WARN:0@4.345] global cap.cpp:478 open VIDEOIO(V4L2): backend is generally available but can't be used to capture by index

@@ -1,0 +1,193 @@
+2026-06-07 20:58:07,417 [FunctionGemma] INFO: Loading FunctionGemma 270M from: /home/micro/Desktop/Project/models/functiongemma-270m-q4_k_m.gguf
+2026-06-07 20:58:07,418 [FunctionGemma] INFO:   Threads: 4  |  Max tokens: 64  |  Temp: 0.1
+llama_context: n_ctx_seq (2048) < n_ctx_train (32768) -- the full capacity of the model will not be utilized
+llama_kv_cache_iswa: using full-size SWA cache (ref: https://github.com/ggml-org/llama.cpp/pull/13194#issuecomment-2868343055)
+2026-06-07 20:58:08,433 [FunctionGemma] INFO: ✅ FunctionGemma 270M loaded and ready.
+2026-06-07 20:58:08,433 [FunctionGemma] INFO: Warming up FunctionGemma model…
+2026-06-07 20:58:16,434 [FunctionGemma] DEBUG: FunctionGemma raw output (8001 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:16,434 [FunctionGemma] INFO: 🤖 FunctionGemma [8001ms]: "turn on the light" → lamp_on({})
+2026-06-07 20:58:16,434 [FunctionGemma] INFO: FunctionGemma warmup complete.
+
+=================================================================
+  FunctionGemma 270M — Self-Test
+=================================================================
+2026-06-07 20:58:16,779 [FunctionGemma] DEBUG: FunctionGemma raw output (345 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:16,779 [FunctionGemma] INFO: 🤖 FunctionGemma [345ms]: "turn the lamp on" → lamp_on({})
+
+  ✅ PASS  [345ms]
+    Input    : "turn the lamp on"
+    Expected : lamp_on
+    Got      : lamp_on({})
+2026-06-07 20:58:17,153 [FunctionGemma] DEBUG: FunctionGemma raw output (374 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:17,153 [FunctionGemma] INFO: 🤖 FunctionGemma [374ms]: "switch off the light please" → lamp_on({})
+
+  ❌ FAIL  [374ms]
+    Input    : "switch off the light please"
+    Expected : lamp_off
+    Got      : lamp_on({})
+2026-06-07 20:58:17,501 [FunctionGemma] DEBUG: FunctionGemma raw output (348 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:17,502 [FunctionGemma] INFO: 🤖 FunctionGemma [348ms]: "make it brighter" → lamp_on({})
+
+  ❌ FAIL  [348ms]
+    Input    : "make it brighter"
+    Expected : increase_brightness
+    Got      : lamp_on({})
+2026-06-07 20:58:17,871 [FunctionGemma] DEBUG: FunctionGemma raw output (370 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:17,872 [FunctionGemma] INFO: 🤖 FunctionGemma [370ms]: "dim the light a little" → lamp_on({})
+
+  ❌ FAIL  [370ms]
+    Input    : "dim the light a little"
+    Expected : decrease_brightness
+    Got      : lamp_on({})
+2026-06-07 20:58:18,311 [FunctionGemma] DEBUG: FunctionGemma raw output (439 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:18,311 [FunctionGemma] INFO: 🤖 FunctionGemma [439ms]: "set brightness to 75 percent" → lamp_on({})
+
+  ❌ FAIL  [439ms]
+    Input    : "set brightness to 75 percent"
+    Expected : set_brightness
+    Got      : lamp_on({})
+2026-06-07 20:58:18,686 [FunctionGemma] DEBUG: FunctionGemma raw output (375 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:18,686 [FunctionGemma] INFO: 🤖 FunctionGemma [375ms]: "I want it at 40 percent" → lamp_on({})
+
+  ❌ FAIL  [375ms]
+    Input    : "I want it at 40 percent"
+    Expected : set_brightness
+    Got      : lamp_on({})
+2026-06-07 20:58:19,050 [FunctionGemma] DEBUG: FunctionGemma raw output (363 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:19,050 [FunctionGemma] INFO: 🤖 FunctionGemma [363ms]: "rotate the lamp to the left" → lamp_on({})
+
+  ❌ FAIL  [363ms]
+    Input    : "rotate the lamp to the left"
+    Expected : pan_left
+    Got      : lamp_on({})
+2026-06-07 20:58:19,501 [FunctionGemma] DEBUG: FunctionGemma raw output (451 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:19,501 [FunctionGemma] INFO: 🤖 FunctionGemma [451ms]: "look right" → lamp_on({})
+
+  ❌ FAIL  [451ms]
+    Input    : "look right"
+    Expected : pan_right
+    Got      : lamp_on({})
+2026-06-07 20:58:19,850 [FunctionGemma] DEBUG: FunctionGemma raw output (349 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:19,850 [FunctionGemma] INFO: 🤖 FunctionGemma [349ms]: "face forward" → lamp_on({})
+
+  ❌ FAIL  [349ms]
+    Input    : "face forward"
+    Expected : pan_center
+    Got      : lamp_on({})
+2026-06-07 20:58:20,338 [FunctionGemma] DEBUG: FunctionGemma raw output (487 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:20,338 [FunctionGemma] INFO: 🤖 FunctionGemma [487ms]: "rotate to 120 degrees" → lamp_on({})
+
+  ❌ FAIL  [487ms]
+    Input    : "rotate to 120 degrees"
+    Expected : set_pan_angle
+    Got      : lamp_on({})
+2026-06-07 20:58:20,682 [FunctionGemma] DEBUG: FunctionGemma raw output (343 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:20,682 [FunctionGemma] INFO: 🤖 FunctionGemma [343ms]: "enable smart mode" → lamp_on({})
+
+  ❌ FAIL  [343ms]
+    Input    : "enable smart mode"
+    Expected : enable_smart_mode
+    Got      : lamp_on({})
+2026-06-07 20:58:21,034 [FunctionGemma] DEBUG: FunctionGemma raw output (351 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:21,034 [FunctionGemma] INFO: 🤖 FunctionGemma [351ms]: "turn off auto brightness" → lamp_on({})
+
+  ❌ FAIL  [351ms]
+    Input    : "turn off auto brightness"
+    Expected : disable_smart_mode
+    Got      : lamp_on({})
+2026-06-07 20:58:21,410 [FunctionGemma] DEBUG: FunctionGemma raw output (376 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:21,411 [FunctionGemma] INFO: 🤖 FunctionGemma [376ms]: "activate gesture control" → lamp_on({})
+
+  ❌ FAIL  [376ms]
+    Input    : "activate gesture control"
+    Expected : activate_gesture_control
+    Got      : lamp_on({})
+2026-06-07 20:58:21,763 [FunctionGemma] DEBUG: FunctionGemma raw output (352 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:21,763 [FunctionGemma] INFO: 🤖 FunctionGemma [352ms]: "stop gesture mode" → lamp_on({})
+
+  ❌ FAIL  [352ms]
+    Input    : "stop gesture mode"
+    Expected : deactivate_gesture_control
+    Got      : lamp_on({})
+2026-06-07 20:58:22,140 [FunctionGemma] DEBUG: FunctionGemma raw output (376 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:22,140 [FunctionGemma] INFO: 🤖 FunctionGemma [376ms]: "I need to focus, turn on tracking" → lamp_on({})
+
+  ❌ FAIL  [376ms]
+    Input    : "I need to focus, turn on tracking"
+    Expected : activate_focus_tracker
+    Got      : lamp_on({})
+2026-06-07 20:58:22,559 [FunctionGemma] DEBUG: FunctionGemma raw output (418 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:22,559 [FunctionGemma] INFO: 🤖 FunctionGemma [418ms]: "stop watching me" → lamp_on({})
+
+  ❌ FAIL  [418ms]
+    Input    : "stop watching me"
+    Expected : deactivate_focus_tracker
+    Got      : lamp_on({})
+2026-06-07 20:58:22,929 [FunctionGemma] DEBUG: FunctionGemma raw output (370 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:22,929 [FunctionGemma] INFO: 🤖 FunctionGemma [370ms]: "start the pomodoro timer" → lamp_on({})
+
+  ❌ FAIL  [370ms]
+    Input    : "start the pomodoro timer"
+    Expected : start_pomodoro
+    Got      : lamp_on({})
+2026-06-07 20:58:23,286 [FunctionGemma] DEBUG: FunctionGemma raw output (357 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:23,286 [FunctionGemma] INFO: 🤖 FunctionGemma [357ms]: "pause the study timer" → lamp_on({})
+
+  ❌ FAIL  [357ms]
+    Input    : "pause the study timer"
+    Expected : pause_pomodoro
+    Got      : lamp_on({})
+2026-06-07 20:58:23,637 [FunctionGemma] DEBUG: FunctionGemma raw output (351 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:23,637 [FunctionGemma] INFO: 🤖 FunctionGemma [351ms]: "reset the pomodoro" → lamp_on({})
+
+  ❌ FAIL  [351ms]
+    Input    : "reset the pomodoro"
+    Expected : reset_pomodoro
+    Got      : lamp_on({})
+2026-06-07 20:58:23,985 [FunctionGemma] DEBUG: FunctionGemma raw output (348 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:23,985 [FunctionGemma] INFO: 🤖 FunctionGemma [348ms]: "scan this document" → lamp_on({})
+
+  ❌ FAIL  [348ms]
+    Input    : "scan this document"
+    Expected : start_scan
+    Got      : lamp_on({})
+2026-06-07 20:58:24,386 [FunctionGemma] DEBUG: FunctionGemma raw output (401 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:24,387 [FunctionGemma] INFO: 🤖 FunctionGemma [401ms]: "take a photo of the page" → lamp_on({})
+
+  ❌ FAIL  [401ms]
+    Input    : "take a photo of the page"
+    Expected : capture_page
+    Got      : lamp_on({})
+2026-06-07 20:58:24,870 [FunctionGemma] DEBUG: FunctionGemma raw output (483 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:24,870 [FunctionGemma] INFO: 🤖 FunctionGemma [483ms]: "process the scan and make a pdf" → lamp_on({})
+
+  ❌ FAIL  [483ms]
+    Input    : "process the scan and make a pdf"
+    Expected : finish_scan
+    Got      : lamp_on({})
+2026-06-07 20:58:25,218 [FunctionGemma] DEBUG: FunctionGemma raw output (348 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:25,218 [FunctionGemma] INFO: 🤖 FunctionGemma [348ms]: "cancel the scan" → lamp_on({})
+
+  ❌ FAIL  [348ms]
+    Input    : "cancel the scan"
+    Expected : cancel_scan
+    Got      : lamp_on({})
+2026-06-07 20:58:25,574 [FunctionGemma] DEBUG: FunctionGemma raw output (356 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:25,575 [FunctionGemma] INFO: 🤖 FunctionGemma [356ms]: "what is the room temperature" → lamp_on({})
+
+  ❌ FAIL  [356ms]
+    Input    : "what is the room temperature"
+    Expected : get_environment_status
+    Got      : lamp_on({})
+2026-06-07 20:58:25,937 [FunctionGemma] DEBUG: FunctionGemma raw output (362 ms): 'lamp_on", "arguments": {}}'
+2026-06-07 20:58:25,937 [FunctionGemma] INFO: 🤖 FunctionGemma [362ms]: "do something random with the system" → lamp_on({})
+
+  ❌ FAIL  [362ms]
+    Input    : "do something random with the system"
+    Expected : unknown
+    Got      : lamp_on({})
+
+=================================================================
+  Results: 1/25 passed  (24 failed)
+=================================================================
+

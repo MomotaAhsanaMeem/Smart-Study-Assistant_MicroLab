@@ -1,0 +1,1 @@
+[libprotobuf ERROR external/com_google_protobuf/src/google/protobuf/text_format.cc:335] Error parsing text-format mediapipe.CalculatorGraphConfig: 68:22: Expected identifier, got: \

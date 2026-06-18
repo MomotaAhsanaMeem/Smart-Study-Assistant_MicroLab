@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroLab Smart Lamp</title>
+    <meta name="description" content="Control your MicroLab Smart Study Lamp from anywhere — gesture, voice, focus tracking, Pomodoro timer, environment sensors, and OCR scanning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app">
+
+        <!-- ============================================= -->
+        <!--  HEADER                                       -->
+        <!-- ============================================= -->
+        <header class="header" id="header">
+            <div class="header-brand">
+                <span class="logo-icon">🔮</span>
+                <div class="header-text">
+                    <h1>MicroLab</h1>
+                    <span class="subtitle">Smart Lamp System</span>
+                </div>
+            </div>
+            <div class="connection-status" id="connection-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="connection-text">Connecting…</span>
+            </div>
+        </header>
+
+        <!-- ============================================= -->
+        <!--  DASHBOARD GRID                               -->
+        <!-- ============================================= -->
+        <main class="dashboard">
+
+            <!-- ========== LAMP CONTROL ========== -->
+            <section class="card lamp-card" id="lamp-card">
+                <div class="card-header">
+                    <span class="card-icon">💡</span>
+                    <h2>Lamp Control</h2>
+                    <div class="lamp-indicator" id="lamp-indicator"></div>
+                </div>
+                <div class="card-body">
+                    <div class="toggle-row">
+                        <button class="btn btn-on" id="btn-lamp-on" onclick="lampOn()">ON</button>
+                        <button class="btn btn-off" id="btn-lamp-off" onclick="lampOff()">OFF</button>
+                    </div>
+
+                    <div class="slider-group">
+                        <label>Brightness <span class="slider-val" id="brightness-val">50%</span></label>
+                        <input type="range" min="0" max="100" value="50" class="range-blue"
+                               id="brightness-slider" oninput="setBrightness(this.value)">
+                    </div>
+
+                    <div class="slider-group">
+                        <label>Pan Angle <span class="slider-val" id="pan-val">90°</span></label>
+                        <input type="range" min="0" max="180" value="90" class="range-purple"
+                               id="pan-slider" oninput="setPan(this.value)">
+                    </div>
+
+                    <div class="row-between">
+                        <span class="label-sm">Smart Auto-Brightness</span>
+                        <label class="switch">
+                            <input type="checkbox" id="smart-toggle" onchange="toggleSmart()">
+                            <span class="switch-track"></span>
+                        </label>
+                    </div>
+
+                    <div class="gesture-row">
+                        <button class="btn btn-gesture" id="btn-gesture" onclick="toggleGesture()">
+                            🖐️ Activate Gestures
+                        </button>
+                        <span class="gesture-status" id="gesture-status">Inactive</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== POMODORO TIMER ========== -->
+            <section class="card pomodoro-card" id="pomodoro-card">
+                <div class="card-header">
+                    <span class="card-icon">⏱️</span>
+                    <h2>Pomodoro Timer</h2>
+                </div>
+                <div class="card-body pomodoro-body">
+                    <div class="timer-display">
+                        <svg class="timer-ring" viewBox="0 0 120 120">
+                            <defs>
+                                <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#58A6FF"/>
+                                    <stop offset="100%" style="stop-color:#8957E5"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+                            <circle class="ring-progress" cx="60" cy="60" r="52" id="timer-progress"/>
+                        </svg>
+                        <div class="timer-text">
+                            <span class="timer-time" id="timer-time">25:00</span>
+                            <span class="timer-label" id="timer-state">READY</span>
+                        </div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn btn-start" onclick="pomodoroStart()">▶ Start</button>
+                        <button class="btn btn-pause" onclick="pomodoroPause()">⏸ Pause</button>
+                        <button class="btn btn-reset" onclick="pomodoroReset()">↺ Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== FOCUS TRACKER ========== -->
+            <section class="card focus-card" id="focus-card">
+                <div class="card-header">
+                    <span class="card-icon">👁️</span>
+                    <h2>Focus Tracker</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="focus-toggle" onchange="toggleFocus()">
+                        <span class="switch-track"></span>
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div class="focus-row">
+                        <div class="focus-indicator">
+                            <span class="focus-dot" id="focus-dot"></span>
+                            <span class="focus-label" id="focus-label">Inactive</span>
+                        </div>
+                        <div class="focus-stats">
+                            <div class="stat-box">
+                                <span class="stat-val" id="distraction-time">0s</span>
+                                <span class="stat-lbl">Distracted</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="distraction-count">0</span>
+                                <span class="stat-lbl">Alerts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Camera Feed (shown when camera is active) -->
+                    <div class="camera-feed-container" id="camera-feed-container" style="display:none">
+                        <div class="camera-feed-header">
+                            <span class="camera-feed-dot"></span>
+                            <span class="camera-feed-label" id="camera-feed-label">LIVE</span>
+                        </div>
+                        <img class="camera-feed" id="camera-feed" alt="Camera Feed">
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== ENVIRONMENT ========== -->
+            <section class="card env-card" id="env-card">
+                <div class="card-header">
+                    <span class="card-icon">🌡️</span>
+                    <h2>Environment</h2>
+                </div>
+                <div class="card-body">
+                    <div class="gauge-row">
+                        <div class="gauge-box">
+                            <span class="gauge-val" id="temp-value">--.-</span>
+                            <span class="gauge-unit">°C</span>
+                            <span class="gauge-lbl">Temperature</span>
+                            <span class="gauge-status" id="temp-status">—</span>
+                        </div>
+                        <div class="gauge-divider"></div>
+                        <div class="gauge-box">
+                            <span class="gauge-val" id="hum-value">--.-</span>
+                            <span class="gauge-unit">%</span>
+                            <span class="gauge-lbl">Humidity</span>
+                            <span class="gauge-status" id="hum-status">—</span>
+                        </div>
+                    </div>
+                    <div class="env-alert" id="env-alert">Initialising sensors…</div>
+                </div>
+            </section>
+
+            <!-- ========== OCR SCANNER ========== -->
+            <section class="card ocr-card" id="ocr-card">
+                <div class="card-header">
+                    <span class="card-icon">📄</span>
+                    <h2>Document Scanner</h2>
+                    <span class="ocr-pages-badge" id="ocr-pages">Pages: 0</span>
+                </div>
+                <div class="card-body">
+                    <div class="ocr-info">
+                        <span class="ocr-state" id="ocr-status">Ready</span>
+                    </div>
+                    <div class="ocr-controls">
+                        <button class="btn btn-scan"    id="btn-ocr-start"   onclick="ocrStart()">📷 Start Scan</button>
+                        <button class="btn btn-capture" id="btn-ocr-capture" onclick="ocrCapture()" style="display:none">📸 Capture</button>
+                        <button class="btn btn-process" id="btn-ocr-process" onclick="ocrProcess()" style="display:none">🤖 Process</button>
+                        <button class="btn btn-cancel"  id="btn-ocr-cancel"  onclick="ocrCancel()"  style="display:none">✖ Cancel</button>
+                    </div>
+                    <!-- Captured page thumbnails —> shown as soon as a page is snapped -->
+                    <div class="ocr-thumbnails" id="ocr-thumbnails"></div>
+                </div>
+            </section>
+
+            <!-- ========== SCANNED PDF LIST ========== -->
+            <section class="card pdf-list-card" id="pdf-list-card">
+                <div class="card-header">
+                    <span class="card-icon">📂</span>
+                    <h2>Scanned PDFs</h2>
+                </div>
+                <div class="card-body">
+                    <em class="pdf-empty" id="pdf-empty">No PDFs generated yet.</em>
+                    <ul class="pdf-list" id="pdf-list"></ul>
+                </div>
+            </section>
+
+            <!-- ========== USER MANUAL ========== -->
+            <section class="card manual-card" id="manual-card">
+                <div class="card-header">
+                    <span class="card-icon">📖</span>
+                    <h2>User Manual & Documentation</h2>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Voice Control -->
+                    <div class="accordion">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🎙️ Voice Control Commands</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul class="manual-list">
+                                <li><strong>Lamp & Brightness:</strong> <span>"Turn on the lamp", "Make it brighter", "Set brightness to 75 percent"</span></li>
+                                <li><strong>Pan & Rotation:</strong> <span>"Rotate left", "Face forward", "Rotate to 120 degrees"</span></li>
+                                <li><strong>Smart & Focus Modes:</strong> <span>"Enable smart mode", "I need to focus", "Stop watching me"</span></li>
+                                <li><strong>Document Scanner:</strong> <span>"Scan this document", "Take a photo", "Done scanning", "Cancel scan"</span></li>
+                                <li><strong>Pomodoro Timer:</strong> <span>"Start pomodoro", "Begin study", "Pause timer", "Reset pomodoro"</span></li>
+                                <li><strong>Environment:</strong> <span>"What is the room temperature", "Weather in the room"</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Gesture Control -->
+                    <div class="accordion" id="gesture-accordion">
+                        <button class="accordion-header" onclick="toggleAccordion(this)" id="gesture-accordion-btn">
+                            <span>🖐️ Camera Gesture Control</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content" id="gesture-accordion-content">
+
+                            <div class="gesture-guide" style="padding:0 18px 18px;">
+
+                                <!-- 1 · OPEN HAND -->
+                                <div class="gesture-card gc-green">
+                                    <div class="gesture-hand">
+                                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Palm -->
+                                            <ellipse cx="36" cy="48" rx="18" ry="16" fill="#3FB950" fill-opacity=".18" stroke="#3FB950" stroke-width="1.5"/>
+                                            <!-- Thumb -->
+                                            <rect x="10" y="34" width="8" height="20" rx="4" fill="#3FB950" fill-opacity=".55" stroke="#3FB950" stroke-width="1.5"/>
+                                            <!-- Index -->
+                                            <rect x="20" y="14" width="8" height="28" rx="4" fill="#3FB950" fill-opacity=".75" stroke="#3FB950" stroke-width="1.5"/>
+                                            <!-- Middle -->
+                                            <rect x="30" y="10" width="8" height="32" rx="4" fill="#3FB950" fill-opacity=".9" stroke="#3FB950" stroke-width="1.5"/>
+                                            <!-- Ring -->
+                                            <rect x="40" y="14" width="8" height="28" rx="4" fill="#3FB950" fill-opacity=".75" stroke="#3FB950" stroke-width="1.5"/>
+                                            <!-- Pinky -->
+                                            <rect x="50" y="22" width="7" height="20" rx="3.5" fill="#3FB950" fill-opacity=".55" stroke="#3FB950" stroke-width="1.5"/>
+                                            <!-- Glow core -->
+                                            <ellipse cx="36" cy="48" rx="10" ry="8" fill="#3FB950" fill-opacity=".08"/>
+                                        </svg>
+                                    </div>
+                                    <span class="gesture-badge">Power On</span>
+                                    <span class="gesture-name">Open Hand</span>
+                                    <span class="gesture-desc">Spread all 5 fingers open to turn the lamp <strong>ON</strong></span>
+                                </div>
+
+                                <!-- 2 · CLOSED FIST -->
+                                <div class="gesture-card gc-red">
+                                    <div class="gesture-hand">
+                                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Fist body -->
+                                            <rect x="16" y="28" width="40" height="28" rx="10" fill="#F85149" fill-opacity=".2" stroke="#F85149" stroke-width="1.5"/>
+                                            <!-- Finger knuckles row -->
+                                            <rect x="18" y="22" width="9" height="14" rx="4.5" fill="#F85149" fill-opacity=".6" stroke="#F85149" stroke-width="1.5"/>
+                                            <rect x="29" y="20" width="9" height="16" rx="4.5" fill="#F85149" fill-opacity=".75" stroke="#F85149" stroke-width="1.5"/>
+                                            <rect x="40" y="22" width="8" height="14" rx="4" fill="#F85149" fill-opacity=".6" stroke="#F85149" stroke-width="1.5"/>
+                                            <rect x="50" y="26" width="7" height="12" rx="3.5" fill="#F85149" fill-opacity=".5" stroke="#F85149" stroke-width="1.5"/>
+                                            <!-- Thumb tucked at side -->
+                                            <rect x="8" y="36" width="10" height="14" rx="5" fill="#F85149" fill-opacity=".4" stroke="#F85149" stroke-width="1.5"/>
+                                            <!-- Glow -->
+                                            <ellipse cx="36" cy="44" rx="14" ry="9" fill="#F85149" fill-opacity=".06"/>
+                                        </svg>
+                                    </div>
+                                    <span class="gesture-badge">Power Off</span>
+                                    <span class="gesture-name">Closed Fist</span>
+                                    <span class="gesture-desc">Curl all fingers into a fist — lamp <strong>OFF</strong> &amp; camera sleeps</span>
+                                </div>
+
+                                <!-- 3 · THUMBS UP -->
+                                <div class="gesture-card gc-yellow">
+                                    <div class="gesture-hand" style="animation: thumbs-bob 2s ease-in-out infinite;">
+                                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Fist base -->
+                                            <rect x="18" y="36" width="36" height="26" rx="9" fill="#E3B341" fill-opacity=".18" stroke="#E3B341" stroke-width="1.5"/>
+                                            <!-- Thumb pointing up -->
+                                            <rect x="16" y="10" width="11" height="34" rx="5.5" fill="#E3B341" fill-opacity=".85" stroke="#E3B341" stroke-width="1.5"/>
+                                            <!-- Curled knuckles -->
+                                            <rect x="30" y="34" width="8" height="10" rx="4" fill="#E3B341" fill-opacity=".5" stroke="#E3B341" stroke-width="1.2"/>
+                                            <rect x="40" y="34" width="7" height="10" rx="3.5" fill="#E3B341" fill-opacity=".4" stroke="#E3B341" stroke-width="1.2"/>
+                                            <rect x="49" y="36" width="6" height="10" rx="3" fill="#E3B341" fill-opacity=".35" stroke="#E3B341" stroke-width="1.2"/>
+                                            <!-- Thumb tip glow -->
+                                            <ellipse cx="21" cy="14" rx="5" ry="5" fill="#E3B341" fill-opacity=".25"/>
+                                            <!-- Star sparkle -->
+                                            <circle cx="46" cy="14" r="2" fill="#E3B341" fill-opacity=".7"/>
+                                            <circle cx="52" cy="20" r="1.5" fill="#E3B341" fill-opacity=".5"/>
+                                            <circle cx="42" cy="9"  r="1.2" fill="#E3B341" fill-opacity=".4"/>
+                                        </svg>
+                                    </div>
+                                    <span class="gesture-badge">Toggle Smart</span>
+                                    <span class="gesture-name">Thumbs Up</span>
+                                    <span class="gesture-desc">Thumb pointing <strong>up</strong>, 4 fingers curled — toggles Smart Auto-Brightness</span>
+                                </div>
+
+                                <!-- 4 · PINCH -->
+                                <div class="gesture-card gc-blue">
+                                    <div class="gesture-hand">
+                                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Palm -->
+                                            <ellipse cx="36" cy="50" rx="16" ry="13" fill="#58A6FF" fill-opacity=".12" stroke="#58A6FF" stroke-width="1.2"/>
+                                            <!-- Index finger extended -->
+                                            <rect x="26" y="18" width="8" height="24" rx="4" fill="#58A6FF" fill-opacity=".7" stroke="#58A6FF" stroke-width="1.5"/>
+                                            <!-- Thumb reaching toward index -->
+                                            <rect x="12" y="22" width="8" height="20" rx="4" fill="#58A6FF" fill-opacity=".55" stroke="#58A6FF" stroke-width="1.5"/>
+                                            <!-- Other fingers curled -->
+                                            <rect x="36" y="30" width="7" height="12" rx="3.5" fill="#58A6FF" fill-opacity=".3" stroke="#58A6FF" stroke-width="1"/>
+                                            <rect x="45" y="34" width="6" height="10" rx="3" fill="#58A6FF" fill-opacity=".25" stroke="#58A6FF" stroke-width="1"/>
+                                            <!-- Pinch contact dot (animated) -->
+                                            <circle cx="26" cy="22" r="5" fill="#58A6FF" fill-opacity=".3" stroke="#58A6FF" stroke-width="1.5">
+                                                <animate attributeName="r" values="4;7;4" dur="1.5s" repeatCount="indefinite"/>
+                                                <animate attributeName="fill-opacity" values=".3;.08;.3" dur="1.5s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <!-- Brightness arrows -->
+                                            <g style="animation: arrow-slide 1.5s ease-in-out infinite;">
+                                                <path d="M54 36 L62 36 M58 31 L63 36 L58 41" stroke="#58A6FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <span class="gesture-badge">Brightness</span>
+                                    <span class="gesture-name">Pinch</span>
+                                    <span class="gesture-desc">Thumb &amp; index pinch together — spread wider to <strong>increase</strong> brightness</span>
+                                </div>
+
+                                <!-- 5 · PEACE / POINT -->
+                                <div class="gesture-card gc-purple">
+                                    <div class="gesture-hand">
+                                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Palm -->
+                                            <ellipse cx="36" cy="52" rx="17" ry="13" fill="#8957E5" fill-opacity=".12" stroke="#8957E5" stroke-width="1.2"/>
+                                            <!-- Index finger -->
+                                            <rect x="24" y="12" width="8" height="30" rx="4" fill="#8957E5" fill-opacity=".85" stroke="#8957E5" stroke-width="1.5"/>
+                                            <!-- Middle finger (peace sign) -->
+                                            <rect x="34" y="10" width="8" height="32" rx="4" fill="#8957E5" fill-opacity=".7" stroke="#8957E5" stroke-width="1.5"/>
+                                            <!-- Ring/Pinky curled -->
+                                            <rect x="44" y="34" width="7" height="12" rx="3.5" fill="#8957E5" fill-opacity=".3" stroke="#8957E5" stroke-width="1"/>
+                                            <!-- Thumb -->
+                                            <rect x="12" y="36" width="8" height="14" rx="4" fill="#8957E5" fill-opacity=".4" stroke="#8957E5" stroke-width="1"/>
+                                            <!-- Left/Right arrows -->
+                                            <g style="animation: arrow-slide-l 1.2s ease-in-out infinite;">
+                                                <path d="M6 36 L14 36 M10 31 L5 36 L10 41" stroke="#8957E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".6"/>
+                                            </g>
+                                            <g style="animation: arrow-slide 1.2s ease-in-out infinite;">
+                                                <path d="M58 36 L66 36 M62 31 L67 36 L62 41" stroke="#8957E5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".6"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <span class="gesture-badge">Pan Lamp</span>
+                                    <span class="gesture-name">Peace / Point</span>
+                                    <span class="gesture-desc">Index + middle (or just index) extended — move <strong>left/right</strong> to rotate lamp</span>
+                                </div>
+
+                                <!-- 6 · AUTO-SLEEP -->
+                                <div class="gesture-card gc-cyan">
+                                    <div class="gesture-hand">
+                                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Clock face -->
+                                            <circle cx="36" cy="38" r="22" fill="#39D2C0" fill-opacity=".1" stroke="#39D2C0" stroke-width="1.5"/>
+                                            <!-- Clock hands -->
+                                            <line x1="36" y1="38" x2="36" y2="22" stroke="#39D2C0" stroke-width="2" stroke-linecap="round"/>
+                                            <line x1="36" y1="38" x2="48" y2="44" stroke="#39D2C0" stroke-width="2" stroke-linecap="round"/>
+                                            <!-- Center dot -->
+                                            <circle cx="36" cy="38" r="2.5" fill="#39D2C0"/>
+                                            <!-- ZZZ sleep -->
+                                            <text x="46" y="22" font-size="9" fill="#39D2C0" fill-opacity=".9" font-weight="700" font-family="monospace">z</text>
+                                            <text x="51" y="16" font-size="11" fill="#39D2C0" fill-opacity=".7" font-weight="700" font-family="monospace">z</text>
+                                            <text x="57" y="10" font-size="13" fill="#39D2C0" fill-opacity=".5" font-weight="700" font-family="monospace">z</text>
+                                        </svg>
+                                    </div>
+                                    <span class="gesture-badge">Auto Sleep</span>
+                                    <span class="gesture-name">Inactivity Timeout</span>
+                                    <span class="gesture-desc">No gesture for <strong>60 seconds</strong> → lamp off, camera released automatically</span>
+                                </div>
+
+                                <!-- Notes bar -->
+                                <div class="gesture-note">
+                                    <span class="gesture-note-icon">💡</span>
+                                    <span>
+                                        <strong>Smart Mode note:</strong> Pinch brightness control only works when Smart Auto-Brightness is <strong>OFF</strong>.
+                                        Use <em>Thumbs Up</em> to toggle it. When Smart Mode is active, the LDR ambient sensor adjusts brightness automatically.
+                                        Manual pinch overrides it for 10 seconds before the sensor resumes.
+                                    </span>
+                                </div>
+
+                                <!-- How-to-start note -->
+                                <div class="gesture-note" style="background:rgba(137,87,229,.06); border-color:rgba(137,87,229,.15);">
+                                    <span class="gesture-note-icon">🎙️</span>
+                                    <span>
+                                        <strong>How to start:</strong> Say <em>"activate gesture"</em>, <em>"start camera"</em>, or <em>"wake"</em> — or press
+                                        <strong>🖐️ Activate Gestures</strong> in the Lamp Control card. Gestures only work when the camera is active.
+                                    </span>
+                                </div>
+
+                            </div><!-- /.gesture-guide -->
+                        </div><!-- /.accordion-content -->
+                    </div><!-- /.accordion -->
+
+                    <!-- Button Control -->
+                    <div class="accordion">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🔘 Physical Button Control</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul class="manual-list">
+                                <li><strong>Lamp Button (Click):</strong> <span>Cycle brightness (20% → 100% → 20%)</span></li>
+                                <li><strong>Lamp Button (Hold):</strong> <span>Turn Lamp ON / OFF</span></li>
+                                <li><strong>Rotate Button (Click):</strong> <span>Rotate right 20°</span></li>
+                                <li><strong>Rotate Button (Hold):</strong> <span>Continuous smooth pan left</span></li>
+                                <li><strong>Hold Both Buttons (1.5s):</strong> <span>Enter Document Scan Mode</span></li>
+                                <li><strong>Lamp Button (in Scan Mode):</strong> <span>Capture current page</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Focus & Pomodoro -->
+                    <div class="accordion">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🧠 Focus Tracker & Pomodoro</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul class="manual-list">
+                                <li><strong>Focus Tracker:</strong> <span>Uses camera face tracking. Triggers visual alerts if distracted (looking away).</span></li>
+                                <li><strong>Pomodoro Timer:</strong> <span>Follows 25-minute study, 5-minute break intervals to maximize productivity.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ========== SYSTEM LOG ========== -->
+            <section class="card log-card" id="log-card">
+                <div class="card-header">
+                    <span class="card-icon">📋</span>
+                    <h2>System Log</h2>
+                </div>
+                <div class="card-body">
+                    <div class="log-container" id="log-container">
+                        <div class="log-entry"><span class="log-ts">--:--:--</span> System starting…</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="footer">
+            MicroLab Smart Lamp &copy; 2026 &mdash; Raspberry Pi 5
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
